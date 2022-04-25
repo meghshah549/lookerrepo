@@ -18,12 +18,14 @@ view: orders {
   dimension: city {
     type: string
     sql: ${TABLE}.City ;;
+    group_label: "Demographic Info"
   }
 
   dimension: country {
     type: string
     map_layer_name: countries
     sql: ${TABLE}.Country ;;
+    group_label: "Demographic Info"
   }
 
   dimension: customer_id {
@@ -525,12 +527,10 @@ measure: avg_rev_per_user {
     value_format_name: usd_0
   }
 
-
-  measure: measure_value {
+   measure: measure_value {
     type:number
     sql: CASE WHEN ${order_measure_type_view.measure_category}="Count" then ${order_count}
-    else ${net_sales} end;;
-
+    else ROUND(${net_sales},2) end;;
   }
 
 
