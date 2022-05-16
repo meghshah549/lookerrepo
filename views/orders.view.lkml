@@ -1,6 +1,5 @@
 view: orders {
   sql_table_name: `sample_superstore.orders`    ;;
-  drill_fields: [order_id]
 
 
   dimension: order_id {
@@ -13,12 +12,17 @@ view: orders {
   dimension: category {
     type: string
     sql: ${TABLE}.Category ;;
+    skip_drill_filter: yes
+    link: {
+      url: "http://www.google.com/search?q={{ value | encode_uri }}"
+    }
   }
 
   dimension: city {
     type: string
     sql: ${TABLE}.City ;;
     group_label: "Demographic Info"
+
   }
 
   dimension: country {
@@ -31,6 +35,9 @@ view: orders {
   dimension: customer_id {
     type: string
     sql: ${TABLE}.Customer_ID ;;
+    link: {
+      url: "https://mediaagility.looker.com/dashboards/263"
+    }
   }
 
   dimension: customer_name {
@@ -57,7 +64,8 @@ view: orders {
     ]
     #convert_tz: no
    #datatype: timestamp
-    sql: CAST(${TABLE}.Order_Date AS TIMESTAMP);;
+    sql: ${TABLE}.Order_Date;;
+    datatype: datetime
   }
 
   filter: timeframe_a {
@@ -519,6 +527,9 @@ measure: avg_rev_per_user {
     drill_fields: [order_id]
     #sql: ${customer_name};;
     value_format_name: id
+    link: {
+      url: "https://mediaagility.looker.com/explore/demo_ecom_ms/events"
+    }
   }
 
   measure: net_sales {
@@ -531,6 +542,30 @@ measure: avg_rev_per_user {
     type:number
     sql: CASE WHEN ${order_measure_type_view.measure_category}="Count" then ${order_count}
     else ROUND(${net_sales},2) end;;
+  }
+
+
+  #Parameters
+  parameter: item_to_add_up {
+    type: unquoted
+    allowed_value: {
+      label: "Net Sales"
+      value: "sales"
+    }
+    allowed_value: {
+      label: "Discount"
+      value: "discount"
+    }
+    allowed_value: {
+      label: "Total Profit"
+      value: "profit"
+    }
+  }
+
+  measure: dynamic_measure {
+    type: sum
+    sql: ${TABLE}.{% parameter item_to_add_up %} ;;
+    value_format_name: "usd"
   }
 
 

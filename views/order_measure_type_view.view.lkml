@@ -5,12 +5,22 @@ view: order_measure_type_view {
         order_id as order_id,
         "Count" as measure_category
       FROM sample_superstore.orders
+      WHERE {% condition order_date %} orders.order_date {% endcondition %}
       UNION ALL
       SELECT
         order_id as order_id,
         "Sales" as measure_category
-      FROM sample_superstore.orders    ;;
+      FROM sample_superstore.orders
+      WHERE {% condition order_date %} orders.order_date {% endcondition %};;
   }
+
+  filter: order_date {
+    type: date
+    # suggest_explore: orders
+    # suggest_dimension: orders.order_date
+
+  }
+
 
   # Define your dimensions and measures here, like this:
   dimension: order_id {

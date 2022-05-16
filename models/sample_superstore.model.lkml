@@ -8,8 +8,8 @@ include: "/views/**/*.dashboard.lookml"
 
 
 datagroup: sample_superstore_default_datagroup {
-  # sql_trigger: SELECT MAX(id) FROM etl_log;;
-  max_cache_age: "1 hour"
+  sql_trigger: SELECT MAX(id) FROM orders;;
+  max_cache_age: "1 minute"
 }
 
 persist_with: sample_superstore_default_datagroup
@@ -35,4 +35,11 @@ explore: orders {
   }
   join: parameters {}
 
+}
+
+explore: orders_fact {}
+
+explore: orders_new {
+  from: orders
+  fields: [orders_new.category]
 }
