@@ -9,12 +9,49 @@ view: orders {
   }
 
 
+  # dimension: category {
+  #   type: string
+  #   sql: ${TABLE}.Category ;;
+  #   skip_drill_filter: yes
+  #   link: {
+  #     url: "http://www.google.com"
+
+  #   }
+  # }
+
+  # dimension: category {
+  #   type: string
+  #   sql: ${TABLE}.Category ;;
+  #   skip_drill_filter: yes
+  #   link: {
+  #     url: "http://www.google.com/search?q={{ value | url_encode  }}"
+  #   }
+  # }
+
+  # dimension: category {
+  #   link: {
+  #     label: "Google"
+  #     url: "http://www.google.com/search?q={{ value }}"
+  #     icon_url: "http://google.com/favicon.ico"
+  #   }
+  # }
+
+  # dimension: category {
+  #   type: string
+  #   sql: ${TABLE}.category ;;
+  #   #skip_drill_filter: yes
+  #   link: {
+  #     url:"http://www.google.com/search?q={{ value }}"
+  #   }
+  # }
+
   dimension: category {
     type: string
-    sql: ${TABLE}.Category ;;
-    skip_drill_filter: yes
+    sql: ${TABLE}.category ;;
+#skip_drill_filter: yes
     link: {
-      url: "http://www.google.com/search?q={{ value | encode_uri }}"
+      label:"Google"
+      url:"http://www.google.com/search?q={{ value }}"
     }
   }
 
@@ -22,6 +59,10 @@ view: orders {
     type: string
     sql: ${TABLE}.City ;;
     group_label: "Demographic Info"
+    link: {
+      label: "Orders Explore"
+      url: "https://mediaagility.looker.com/dashboards/263"
+    }
 
   }
 
@@ -569,6 +610,19 @@ measure: avg_rev_per_user {
   }
 
 
+dimension: row_tier {
+  type: tier
+  tiers: [0,1000,2000,3000,4000,5000,6000]
+  sql: ${row_id}
+;;
+style: integer
+}
+
+
+measure: runnning_total_test {
+  type: running_total
+  sql: ${net_sales} ;;
+}
 
 
 

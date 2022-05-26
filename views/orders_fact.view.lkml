@@ -4,18 +4,23 @@ view: orders_fact {
   derived_table: {
     sql:SELECT
        order_id AS order_id
+      ,order_date
        ,COUNT(distinct order_id) AS lifetime_order_count
-       ,SUM(sale_price) AS lifetime_revenue
+       ,SUM(sales) AS lifetime_revenue
        ,MIN(order_date) AS first_order_date
        ,MAX(order_date) AS latest_order_date
        FROM sample_superstore.orders
-       WHERE {% condition date_filter %} orders.order_date {% endcondition %}
-       GROUP BY user_id
+       WHERE {% condition order_date %} orders.order_date {% endcondition %}
+       GROUP BY order_id,order_date
             ;;
   }
 
-  filter: date_filter {
-    type:date
+
+  dimension_group: order {
+    type: time
+    timeframes: [date, week, month, year]
+    sql: ${TABLE}.order_date ;;
+    datatype: date
   }
 
   # Define your order_id and measures here, like this:
