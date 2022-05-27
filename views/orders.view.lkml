@@ -8,7 +8,7 @@ view: orders {
     sql: ${TABLE}.Order_ID ;;
   }
 
-  #test 4
+  #test 5
 
 
   # dimension: category {
