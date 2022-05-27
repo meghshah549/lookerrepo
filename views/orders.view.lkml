@@ -9,6 +9,7 @@ view: orders {
   }
 
   #test 9
+  #advance deployment enabled
 
 
   # dimension: category {
