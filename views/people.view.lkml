@@ -20,4 +20,4 @@ view: people {
 }
 
 
-#Added comment to check advance deployment mode
+#Added comment to check advance deployment mode process
