@@ -18,10 +18,3 @@ view: returns {
     drill_fields: [orders.order_id, orders.customer_name, orders.product_name]
   }
 }
-
-#Comment added in returns
-
-
-#New retruns
-
-#Reviewer Added
