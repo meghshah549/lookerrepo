@@ -49,3 +49,5 @@ view: orders_fact {
     sql: ${lifetime_revenue} ;;
   }
 }
+
+#order_fact_comment
