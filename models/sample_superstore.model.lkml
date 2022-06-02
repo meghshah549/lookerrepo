@@ -43,3 +43,4 @@ explore: orders_new {
   from: orders
   fields: [orders_new.category]
 }
+# test
