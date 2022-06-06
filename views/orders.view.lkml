@@ -788,20 +788,221 @@ measure: runnning_total_test {
         required: yes
       }
 
-      #   form_param: {
-      #         name: "email"
-      #         type: string
-      #         label: "Email Id"
-      #         option: {
-      #           name: "email"
-      #           label: "Email Id"
-      #         }
-      #       required: yes
-      # }
-  }
+   }
   }
 
 
+
+
+  dimension: action_2 {
+    type: string
+    sql: "Add Records";;
+    # html: <a><button>Add Records</button></a>;;
+    action: {
+      label: "Create Subscription"
+      #url: "https://{{api_url}}/insert?name=fdm_manual_adjustment"
+      # form_url: "https://{{api_url}}/form?name=fdm_manual_adjustment&id={{id}}"
+      url: "https://test/insert?name=fdm_manual_adjustment"
+      form_param: {
+        name: "report_name"
+        type: select
+        label: "Report Name"
+        option: {
+          name: "dsr"
+          label: "DSR"
+        }
+        option: {
+          name: "bin_management"
+          label: "Bin Management"
+        }
+        option: {
+          name: "tablet"
+          label: "Tablet"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "filter_select"
+        type: select
+        label: "Select Filter"
+        option: {
+          name: "store_name"
+          label: "Store Name"
+        }
+        option: {
+          name: "regional_manager"
+          label: "Regional Manager"
+        }
+        option: {
+          name: "district_manager"
+          label: "District Manager"
+        }
+      }
+      form_param: {
+        name: "filter_value"
+        type: select
+        label: "Filter Value"
+        option: {
+          name: "athens"
+          label: "ATHENS_00157"
+        }
+        option: {
+          name: "smyrna_13101"
+          label: "SMYRNA_13101"
+        }
+      }
+      form_param: {
+        name: "subscription_schedule"
+        type: select
+        label: "Subscription Schedule"
+        option: {
+          name: "daily"
+          label: "Daily"
+        }
+        option: {
+          name: "weekly"
+          label: "Weekly"
+        }
+        option: {
+          name: "monthly"
+          label: "Monthly"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "start_date"
+        type: select
+        label: "Start Date"
+        option: {
+          name: "1"
+          label: "1"
+        }
+        option: {
+          name: "2"
+          label: "2"
+        }
+        option: {
+          name: "3"
+          label: "3"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "start_month"
+        type: select
+        label: "Start Month"
+        option: {
+          name: "jan"
+          label: "JAN"
+        }
+        option: {
+          name: "feb"
+          label: "FEB"
+        }
+        option: {
+          name: "mar"
+          label: "MAR"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "start_year"
+        type: select
+        label: "Start Year"
+        option: {
+          name: "2020"
+          label: "2020"
+        }
+        option: {
+          name: "2021"
+          label: "2021"
+        }
+        option: {
+          name: "2022"
+          label: "2022"
+        }
+        required: yes
+      }
+
+      form_param: {
+        name: "end_date"
+        type: select
+        label: "End Date"
+        option: {
+          name: "1"
+          label: "1"
+        }
+        option: {
+          name: "2"
+          label: "2"
+        }
+        option: {
+          name: "3"
+          label: "3"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "end_month"
+        type: select
+        label: "End Month"
+        option: {
+          name: "jan"
+          label: "JAN"
+        }
+        option: {
+          name: "feb"
+          label: "FEB"
+        }
+        option: {
+          name: "mar"
+          label: "MAR"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "end_year"
+        type: select
+        label: "End Year"
+        option: {
+          name: "2020"
+          label: "2020"
+        }
+        option: {
+          name: "2021"
+          label: "2021"
+        }
+        option: {
+          name: "2022"
+          label: "2022"
+        }
+        required: yes
+      }
+
+      form_param: {
+        name: "email"
+        type: string
+        label: "Email Id"
+        required: yes
+      }
+
+      form_param: {
+        name: "report_type"
+        type: select
+        label: "Report Type"
+        option: {
+          name: "csv"
+          label: "CSV"
+        }
+        option: {
+          name: "pdf"
+          label: "PDF"
+        }
+        required: yes
+      }
+
+    }
+  }
 
 
 
