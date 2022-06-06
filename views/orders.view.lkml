@@ -242,10 +242,10 @@ measure: avg_rev_per_user {
     convert_tz: no
    }
 
-  dimension: ship_mode {
-    type: string
-    sql: ${TABLE}.Ship_Mode ;;
-  }
+  # dimension: ship_mode {
+  #   type: string
+  #   sql: ${TABLE}.Ship_Mode ;;
+  # }
 
   dimension: state {
     type: string
@@ -630,12 +630,176 @@ measure: runnning_total_test {
   sql: ${net_sales} ;;
 }
 
+  # dimension: action {
+  #   type: string
+  #   sql: "Add Records";;
+  #   # html: <a><button>Add Records</button></a>;;
+  #   action: {
+  #     label: "Insert Record"
+  #     url: "https://test/insert?name=fdm_manual_adjustment"
+  #     #form_url: "https://test/form?name=fdm_manual_adjustment&id"
+  #     # param: {
+  #     #   name:"id"
+  #     #   value: "{{id}}"
+  #     # }
+  #     form_param: {
+  #       name: "report_name"
+  #       type: string
+  #       label: "Report Name"
+  #       # option: {
+  #       #   name: "name string"
+  #       #   label: "possibly-localized-string"
+  #       # }
+  #       required: yes
+  #       #description: "possibly-localized-string"
+  #       # default: "string"
+  #     }
+  #     form_param: {
+  #       name: "description"
+  #       type: string
+  #       label: "Description"
+  #       # option: {
+  #       #   name: "name string"
+  #       #   label: "possibly-localized-string"
+  #       # }
+  #       #required: yes
+  #       #description: "possibly-localized-string"
+  #       # default: "string"
+  #     }
+  #     form_param: {
+  #       name: "subscription_schedule"
+  #       type: select
+  #       label: "Subscription Schedule"
+  #       option: {
+  #         name: "daily"
+  #         label: "Daily"
+  #       }
+  #       option: {
+  #         name: "weekly"
+  #         label: "Weekly"
+  #       }
+  #       option: {
+  #         name: "monthly"
+  #         label: "Monthly"
+  #       }
+  #       required: yes
+  #       #description: "possibly-localized-string"
+  #       # default: "string"
+  #     }
+
+  #   }
+  # }
+
+  dimension: id {
+    #primary_key: yes
+    type: string
+    sql: CAST(UNIX_SECONDS(current_timestamp) AS STRING);;
+
+  }
+
+  # dimension: id_update {
+  #   primary_key: yes
+  #   type: string
+  #   sql:${TABLE}.id  ;;
+  # }
+
+  dimension: api_url {
+    type: string
+    sql:"looker-writeback-74uylbxxfq-ue.a.run.app";;
+  }
 
 
 
+  dimension: action {
+    type: string
+    sql: "Add Records";;
+    # html: <a><button>Add Records</button></a>;;
+    action: {
+      label: "Create Subscription"
+      url: "https://{{api_url}}/insert?name=fdm_manual_adjustment"
+     # form_url: "https://{{api_url}}/form?name=fdm_manual_adjustment&id={{id}}"
+     # url: "https://test/insert?name=fdm_manual_adjustment"
+      form_param: {
+        name: "report_name"
+        type: select
+        label: "Report Name"
+        option: {
+          name: "dsr"
+          label: "DSR"
+        }
+        option: {
+          name: "bin_management"
+          label: "Bin Management"
+        }
+        option: {
+          name: "tablet"
+          label: "Tablet"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "regional_manager"
+        type: select
+        label: "Regional Manager"
+        option: {
+          name: "abc"
+          label: "ABC"
+        }
+        option: {
+          name: "xyz"
+          label: "XYZ"
+        }
+      }
+      form_param: {
+        name: "district_manager"
+        type: select
+        label: "District Manager"
+        option: {
+          name: "pqr"
+          label: "PQR"
+        }
+        option: {
+          name: "mnp"
+          label: "MNP"
+        }
+      }
+      form_param: {
+        name: "subscription_schedule"
+        type: select
+        label: "Subscription Schedule"
+        option: {
+          name: "daily"
+          label: "Daily"
+        }
+        option: {
+          name: "weekly"
+          label: "Weekly"
+        }
+        option: {
+          name: "monthly"
+          label: "Monthly"
+        }
+        required: yes
+      }
+      form_param: {
+        name: "email"
+        type: string
+        label: "Email Id"
+        required: yes
+      }
 
-
-
+      #   form_param: {
+      #         name: "email"
+      #         type: string
+      #         label: "Email Id"
+      #         option: {
+      #           name: "email"
+      #           label: "Email Id"
+      #         }
+      #       required: yes
+      # }
+  }
+  }
 
 
 
