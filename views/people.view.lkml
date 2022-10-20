@@ -13,6 +13,9 @@ view: people {
     sql: ${TABLE}.region ;;
   }
 
+  parameter: person_param {
+    type: string
+  }
   measure: count {
     type: count
     drill_fields: []

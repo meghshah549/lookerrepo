@@ -2,7 +2,6 @@
 connection: "superstore"
 
 
-
 include: "/views/**/*.view"
 include: "/views/**/*.dashboard.lookml"
 
@@ -34,7 +33,11 @@ explore: orders {
     relationship: one_to_one
   }
   join: parameters {}
-
+  join: order_fact_ndt {
+    type: inner
+    sql_on: ${order_fact_ndt.order_id}=${orders.order_id} ;;
+    relationship: one_to_one
+  }
 }
 
 explore: orders_fact {}
@@ -43,4 +46,14 @@ explore: orders_new {
   from: orders
   fields: [orders_new.category]
 }
-# test
+# explore: order_fact_ndt {
+#   join: orders {
+#     type: inner
+#     sql_on: ${order_fact_ndt.order_id}=${orders.order_id} ;;
+#     relationship: one_to_one
+#   }
+# }
+
+explore: orders_facts_2 {}
+
+explore: new_orders {}

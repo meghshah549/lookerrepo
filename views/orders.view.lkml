@@ -61,6 +61,48 @@ view: orders {
     }
   }
 
+  dimension: category_1 {
+    type: string
+    sql: ${TABLE}.category ;;
+    html:  <a href="https://www.google.com/">{{ value }}</a> ;;
+  }
+
+  dimension: category_2{
+    type: string
+    sql: ${TABLE}.category ;;
+    html:  <a href="https://www.google.com/search?q={{value}}">{{ value }}</a> ;;
+  }
+
+  dimension: category_3 {
+    type: string
+    sql: ${TABLE}.category ;;
+    link: {
+      label: "Google Search"
+      url: "https://www.google.com/"
+      icon_url: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+    }
+  }
+
+  dimension: category_4{
+    type: string
+    sql: ${TABLE}.category ;;
+    link: {
+      label: "Google Search"
+      url: "https://www.google.com/search?q={{value}}"
+      icon_url: "https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg"
+    }
+  }
+
+  dimension: category_5 {
+    type: string
+    sql: ${TABLE}.category ;;
+    html:  <a href="/dashboards/263?Category={{ value | url_encode }}">{{ value }}</a> ;;
+  }
+
+
+
+
+
   dimension: city {
     type: string
     sql: ${TABLE}.City ;;
@@ -73,7 +115,7 @@ view: orders {
   }
 
   dimension: country {
-    type: string
+    #type: location
     map_layer_name: countries
     sql: ${TABLE}.Country ;;
     group_label: "Demographic Info"
@@ -90,7 +132,66 @@ view: orders {
   dimension: customer_name {
     type: string
     sql: ${TABLE}.Customer_Name ;;
+    action:{
+      label: "Form"
+      url: "https://{{api_url}}/insert?name=fdm_manual_adjustment"
+     # form_url: "https://{{api_url}}/form?name=fdm_manual_adjustment&id={{id}}"
+     # url: "https://test/insert?name=fdm_manual_adjustment"
+      form_param: {
+        name: "name"
+        type: string
+        label: "Name"
+        required: yes
+      }
+      form_param: {
+        name: "email"
+        type: string
+        label: "Email"
+        required: yes
+      }
+      form_param: {
+        name: "age"
+        type: string
+        label: "Age"
+        required: yes
+      }
+
+      form_param: {
+        name: "gender"
+        type: select
+        label: "Gender"
+        option: {
+          name: "male"
+          label: "Male"
+        }
+        option: {
+          name: "female"
+          label: "Female"
+        }
+      }
+      form_param: {
+        name: "country"
+        type: select
+        label: "Country"
+        option: {
+          name: "usa"
+          label: "USA"
+        }
+        option: {
+          name: "uk"
+          label: "UK"
+        }
+      }
+     }
   }
+
+
+  dimension: category_10 {
+    type: string
+    sql: ${TABLE}.category ;;
+    html:  <a href="https://www.google.com/search?q={{value}}">{{ value }}</a> ;;
+  }
+
 
   measure: discount {
     type: sum
@@ -248,8 +349,10 @@ measure: avg_rev_per_user {
   # }
 
   dimension: state {
-    type: string
+    #type: location
     sql: ${TABLE}.State ;;
+    map_layer_name: us_states
+
   }
 
   dimension: sub_category {
@@ -590,6 +693,54 @@ measure: avg_rev_per_user {
     sql: CASE WHEN ${order_measure_type_view.measure_category}="Count" then ${order_count}
     else ROUND(${net_sales},2) end;;
   }
+
+  ###multiple drill on single measure
+
+  measure: count_with_drills {
+
+    type: count
+
+    link: {
+
+      label: "state"
+
+      url: "{{ count_set_1._link }}"
+
+    }
+
+    link: {
+
+      label: "category"
+
+      url: "{{ count_set_2._link }}"
+
+    }
+
+  }
+
+  measure: count_set_1 {
+
+    type: count
+
+    drill_fields: [state, sub_category]
+
+    hidden: yes
+
+  }
+
+  measure: count_set_2 {
+
+    type: count
+
+    drill_fields: [category, region]
+
+    hidden: yes
+
+  }
+
+
+
+  ####################
 
 
   #Parameters
@@ -1004,31 +1155,77 @@ measure: runnning_total_test {
     }
   }
 
+  parameter: select_timeframe {
+    type: unquoted
+    default_value: "order_month"
+    allowed_value: {
+      value: "order_date"
+      label: "Date"
+    }
+    allowed_value: {
+      value: "order_week"
+      label: "Week"
+    }
+    allowed_value: {
+      value: "order_month"
+      label: "Month"
+    } }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  dimension: dynamic_timeframe {
+    label_from_parameter: select_timeframe
+    type: string
+    sql:
+     {% if select_timeframe._parameter_value == 'order_date' %}
+     ${order_date}
+     {% elsif select_timeframe._parameter_value == 'order_week' %}
+     ${order_week}
+     {% else %}
+     ${order_month}
+     {% endif %} ;;
 
 }
+
+
+parameter: order_dt_param {
+  type: date
+}
+
+dimension: is_fill {
+  type: yesno
+  sql: ${order_date}={% parameter order_dt_param %} ;;
+}
+
+  dimension: is_prev_fill {
+    type: yesno
+    sql: ${order_date}={% parameter order_dt_param %} ;;
+  }
+
+measure:sales_curr  {
+  type: sum
+  sql: ${TABLE}.Sales ;;
+  filters: [is_fill: "yes"]
+}
+
+  measure:sales_prev  {
+    type: sum
+    sql: ${TABLE}.Sales ;;
+    filters: [is_prev_fill: "yes"]
+  }
+
+  measure:sales_ly  {
+    type: sum
+    sql: ${TABLE}.Sales ;;
+  }
+
+  measure: custom_net_sales {
+    type: sum
+    sql: ${TABLE}.Sales ;;
+    html:
+    {% if orders.region._value == 'West' and value < 230000 %}
+    <p style="color: green; font-size:100% ; font-weight:bold ; background-color: black ">{{ rendered_value }}</p>
+    {% else %}
+    <p style="color: red; font-size:100%">{{ rendered_value }}</p>
+    {% endif %};;
+  }
+
+  }

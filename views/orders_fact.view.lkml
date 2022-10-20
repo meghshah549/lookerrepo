@@ -13,7 +13,10 @@ view: orders_fact {
        WHERE {% condition order_date %} orders.order_date {% endcondition %}
        GROUP BY order_id,order_date
             ;;
+
   }
+
+
 
 
   dimension_group: order {
