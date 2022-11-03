@@ -125,4 +125,11 @@ view: orders_vw {
     type: yesno
     sql: DATE_DIFF(CURRENT_DATE(),DATE(${latest_order_date}),DAY)<=100 ;;
   }
+
+  measure: repeat_customer{
+    type: yesno
+    sql: COUNT(CASE WHEN ${order_id} > 1 THEN 2 ELSE 1 END) ;;
+    # COUNT(${order_id} > 1) ;;
+
+  }
 }
