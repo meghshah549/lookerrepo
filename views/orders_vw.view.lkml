@@ -126,9 +126,14 @@ view: orders_vw {
     sql: DATE_DIFF(CURRENT_DATE(),DATE(${latest_order_date}),DAY)<=100 ;;
   }
 
+  measure: order_count {
+    type: count_distinct
+    sql: ${order_id} ;;
+  }
+
   measure: repeat_customer{
     type: yesno
-    sql: COUNT(CASE WHEN ${order_id} > 1 THEN 2 ELSE 1 END) ;;
+    sql: ${order_count}>1 ;;
     # COUNT(${order_id} > 1) ;;
 
   }
