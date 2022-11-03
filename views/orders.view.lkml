@@ -7,7 +7,11 @@ view: orders {
     type: string
     sql: ${TABLE}.Order_ID ;;
   }
-
+measure: test{
+  type:  count_distinct
+  sql: ${TABLE}.order_id ;;
+  filters: [state: "ca"]
+}
   #test 9
   #advance deployment enabled
   # testing
