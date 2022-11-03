@@ -29,6 +29,7 @@ view: orders_vw {
       year
     ]
     sql: ${TABLE}.created_at ;;
+    datatype: date
   }
 
   # Here's what a typical dimension looks like in LookML.
@@ -122,6 +123,6 @@ view: orders_vw {
   }
   measure: is_active{
     type: yesno
-    sql: ${latest_order_date} - CURRENT_DATE() ;;
+    sql: DATE_DIFF(CURRENT_DATE(),DATE(${latest_order_date}),DAY)<=100 ;;
   }
 }
