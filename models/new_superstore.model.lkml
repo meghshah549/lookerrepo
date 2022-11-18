@@ -45,4 +45,26 @@ explore: orders_vw {
     sql_on: ${products_vw.distribution_center_id} = ${distribution_centers_vw.id} ;;
     relationship: many_to_one
   }
+  join: derivedn_order {
+  type: left_outer
+  sql_on: ${orders_vw.user_id} = ${derivedn_order.user_id} ;;
+  relationship: many_to_one
+  }
+
+  # join: dd_order_vw {
+  #   type: left_outer
+  #   sql_on: ${orders_vw.user_id} = ${dd_order_vw.user_id} ;;
+  #   relationship: many_to_one
+  # }
+
+
 }
+#explore: orders_derived_table_vw {}
+
+# join: testn_derived {
+#   type: left_outer
+#   sql_on: ${orders_vw.user_id} = ${testn_derived.user_id} ;;
+#   relationship: many_to_one
+# }
+
+explore: orders_native {}
