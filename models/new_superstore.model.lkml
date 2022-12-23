@@ -6,7 +6,8 @@ include: "/views/*.view.lkml"                # include all views in the views/ f
 
 # # Select the views that should be a part of this model,
 # # and define the joins that connect them together.
-#
+
+#persist_with: new_sample_superstore_caching
 # explore: order_items {
 #   join: orders {
 #     relationship: many_to_one
@@ -18,10 +19,18 @@ include: "/views/*.view.lkml"                # include all views in the views/ f
 #     sql_on: ${users.id} = ${orders.user_id} ;;
 #   }
 # }
+label: "online super store"
+
+datagroup: new_sample_superstore_caching {
+  max_cache_age: "3 hours"
+  sql_trigger: ;;
+}
+
 
 
 explore: orders_vw {
-
+description: "this is orders explore"
+group_label: "learn super store"
   join: users_vw {
     type: left_outer
     sql_on: ${orders_vw.user_id} = ${users_vw.id} ;;
@@ -50,6 +59,16 @@ explore: orders_vw {
   sql_on: ${orders_vw.user_id} = ${derivedn_order.user_id} ;;
   relationship: many_to_one
   }
+  join:sql_derived_order{
+    type: left_outer
+    sql_on: ${orders_vw.user_id} = ${sql_derived_order.user_id} ;;
+  relationship: many_to_one
+  }
+  # join: templated_filter {
+  #   type: left_outer
+  #   sql_on: ${order_vw.user_id} = ${templated_filter.user_id};;
+  #   relationship: many_to_one
+  # }
 
   # join: dd_order_vw {
   #   type: left_outer
@@ -67,4 +86,7 @@ explore: orders_vw {
 #   relationship: many_to_one
 # }
 
-explore: orders_native {}
+explore: orders_native {
+
+}
+#hidden: yes

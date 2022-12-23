@@ -14,9 +14,6 @@ view: orders_vw {
     sql: ${TABLE}.id ;;
   }
 
-  # Dates and timestamps can be represented in Looker using a dimension group of type: time.
-  # Looker converts dates and timestamps to the specified timeframes within the dimension group.
-
   dimension_group: created {
     type: time
     timeframes: [
@@ -31,10 +28,6 @@ view: orders_vw {
     sql: ${TABLE}.created_at ;;
     datatype: date
   }
-
-  # Here's what a typical dimension looks like in LookML.
-  # A dimension is a groupable field that can be used to filter query results.
-  # This dimension will be called "Delivered At" in Explore.
 
   dimension: delivered_at {
     type: string
@@ -61,20 +54,6 @@ view: orders_vw {
     sql: ${TABLE}.sale_price ;;
   }
 
-  # A measure is a field that uses a SQL aggregate function. Here are defined sum and average
-  # measures for this dimension, but you can also add measures of many different aggregates.
-  # Click on the type parameter to see all the options in the Quick Help panel on the right.
-
-  # measure: total_sale_price {
-  #   type: sum
-  #   sql: ${sale_price} ;;
-  # }
-
-  # measure: average_sale_price {
-  #   type: average
-  #   sql: ${sale_price} ;;
-  # }
-
   dimension: shipped_at {
     type: string
     sql: ${TABLE}.shipped_at ;;
@@ -95,7 +74,82 @@ view: orders_vw {
     drill_fields: [order_item_id]
   }
   #######
+  parameter: item_to_add_up {
+    type: unquoted
+    allowed_value: {
+      label: "Total Sale Price"
+      value: "sale_price"
+    }
+    # allowed_value: {
+    #   label: "Total Cost"
+    #   value: "total_cost"
+    # }
+  }
+  parameter: number_of_results {
+    type: string
+    allowed_value: {
+      label: "Less than 500"
+      value: "< 500"
+    }
+    allowed_value: {
+      label: "Less than 10,000"
+      value: "< 10000"
+    }
+    allowed_value: {
+      label: "All Results"
+      value: "> 0"
+    }
+  }
 
+  measure: dyanmic_sum {
+    type: sum
+    sql: ${TABLE}.{% parameter item_to_add_up %} ;;
+    value_format_name: "usd"
+  }
+
+  parameter: date_granularity {
+    type: unquoted
+    allowed_value: {
+      label: "Day"
+      value: "day"
+    }
+    allowed_value: {
+      label: "Month"
+      value: "month"
+    }
+    allowed_value: {
+      label: "Year"
+      value: "year"
+    }
+  }
+
+  dimension: date {
+    sql:
+    {% if date_granularity._parameter_value == 'day' %}
+      ${created_date}
+    {% elsif date_granularity._parameter_value == 'month' %}
+      ${created_month}
+      {% elsif date_granularity._parameter_value == 'year' %}
+      ${created_year}
+    {% else %}
+      ${created_date}
+    {% endif %};;
+    html:
+    {% if date_granularity._parameter_value == 'day' %}
+    <font color="green">{{ rendered_value }}</font>
+    {% elsif date_granularity._parameter_value == 'month' %}
+    <font color="red">{{ rendered_value }}</font>
+    {% elsif date_granularity._parameter_value == 'year' %}
+    <font color="blue">{{ rendered_value }}</font>
+    {% else %}
+    <font color="black">{{ rendered_value }}</font>
+    {% endif %};;
+  }
+  parameter: date_selector {
+    type: date_time
+    description: "Use this field to select a date to filter results by."
+  }
+##########################################################
   measure : total_life_time_orders{
     type :sum
     sql: ${order_item_id} ;;
@@ -127,16 +181,6 @@ view: orders_vw {
     type: count_distinct
     sql: ${order_id} ;;
   }
-
-  # dimension: customer_lifetime_orders {
-  #   type: tier
-  #   tiers: [1, 2, 3, 6, 10]
-  #   style: integer
-  #   sql: ${order_id};;
-
-  # # sql: ${TABLE}.order_count ;;
-  # }
-
 
   measure: repeat_customer{
     type: yesno
@@ -256,7 +300,11 @@ view: orders_vw {
     value_format_name: percent_2
   }
 
+  measure: test {
+    type: number
+    sql: ${total_lifetime_revenue}-${inventory_vw.total_cost} ;;
 
+  }
 
 
 
