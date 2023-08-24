@@ -19,18 +19,43 @@ include: "/views/*.view.lkml"                # include all views in the views/ f
 #     sql_on: ${users.id} = ${orders.user_id} ;;
 #   }
 # }
+
 label: "online super store"
 
 datagroup: new_sample_superstore_caching {
   max_cache_age: "3 hours"
-  sql_trigger: ;;
+  sql_trigger: select max(id) from order_id;;
 }
 
-
+persist_with: new_sample_superstore_caching
 
 explore: orders_vw {
-description: "this is orders explore"
+  #extension: required
+######################## practice------------------------------
+  #sql_always_where: ${created_date} >= '2019-01-01';;
+#always_join: [inventory_vw,users_vw,products_vw]
+  # always_filter: {
+  #   filters: [user_id: "123"]
+  # }
+  # conditionally_filter: {
+  #   filters: [id: "456", users_vw.id: "678,789"]
+  #   unless: [date]
+  # }
+  #############################________________________________
+  # access_filter: {
+  #   field: users_vw.age
+  #   user_attribute:
+  # }
+
+  description: "Start here for Event analysis"
+  fields: [ALL_FIELDS*]
+  from: orders_vw
+  view_name: orders_vw
+  extends: [orders_native]
+
+#description: "this is orders explore"
 group_label: "learn super store"
+
   join: users_vw {
     type: left_outer
     sql_on: ${orders_vw.user_id} = ${users_vw.id} ;;
@@ -87,6 +112,10 @@ group_label: "learn super store"
 # }
 
 explore: orders_native {
-
+  # join: inventory_vw {
+  #   type: left_outer
+  #   sql_on: ${orders_native.id} = ${inventory_vw.id} ;;
+  #   relationship: many_to_one
+  # }
 }
 #hidden: yes

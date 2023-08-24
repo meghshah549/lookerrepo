@@ -13,6 +13,10 @@ view: users_vw {
     type: number
     sql: ${TABLE}.id ;;
   }
+  # required_access_grant: user_id {
+  #   user_attribute: id
+  #   allowed_values: ["1", "2", "3", "4", "5"]
+  # }
 
   # Here's what a typical dimension looks like in LookML.
   # A dimension is a groupable field that can be used to filter query results.
@@ -46,6 +50,14 @@ view: users_vw {
     type: string
     map_layer_name: countries
     sql: ${TABLE}.country ;;
+    drill_fields: [state, city]
+  }
+  measure: count {
+    type: count
+    drill_fields: [user_details*]
+  }
+  set: user_details {
+    fields: [id, city, state, country]
   }
 
   # Dates and timestamps can be represented in Looker using a dimension group of type: time.
@@ -66,6 +78,7 @@ view: users_vw {
   }
 
   dimension: email {
+    tags: ["phone"]
     type: string
     sql: ${TABLE}.email ;;
   }
@@ -109,9 +122,9 @@ view: users_vw {
     type: zipcode
     sql: ${TABLE}.zip ;;
   }
+  # dimension: days_since_signup {
+  #   type: number
+  #   sql: DATE_DIFF(current_date(), ${created_date}, DAY);;
 
-  measure: count {
-    type: count
-    drill_fields: [id, last_name, first_name]
-  }
+
 }

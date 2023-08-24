@@ -1,10 +1,13 @@
+include: users_vw.view
+
 # The name of this view in Looker is "Orders Vw"
 view: orders_vw {
+  extends: [users_vw]
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
   sql_table_name: `poc-analytics-ai.sample_superstore.orders_vw`
     ;;
-  drill_fields: [order_item_id]
+  drill_fields: [order_item_id,count,first_order_date]
   # This primary key is the unique key for this table in the underlying database.
   # You need to define a primary key in a view in order to join to other views.
 
@@ -63,27 +66,29 @@ view: orders_vw {
     type: string
     sql: ${TABLE}.status ;;
   }
-
+#-----------------------------------------------------
   dimension: user_id {
     type: number
     sql: ${TABLE}.user_id ;;
+    drill_fields: [order_item_id,status]
   }
 
   measure: count {
     type: count
-    drill_fields: [order_item_id]
+    drill_fields: [order_item_id,status]
   }
-  #######
+
+  ###########################################333
   parameter: item_to_add_up {
     type: unquoted
     allowed_value: {
       label: "Total Sale Price"
       value: "sale_price"
     }
-    # allowed_value: {
-    #   label: "Total Cost"
-    #   value: "total_cost"
-    # }
+    allowed_value: {
+      label: "Total Cost"
+      value: "total_cost"
+    }
   }
   parameter: number_of_results {
     type: string
@@ -100,6 +105,16 @@ view: orders_vw {
       value: "> 0"
     }
   }
+  # dimension: range {
+  #   sql:
+  #   {% if number_of_results._parameter_value < '500' %}
+  #     ${}
+  #   {% elsif number_of_results._parameter_value < '10000' %}
+  #     ${}
+  #   {% else %}
+  #     ${}
+  #   {% endif %};;
+  # }
 
   measure: dyanmic_sum {
     type: sum
@@ -149,6 +164,57 @@ view: orders_vw {
     type: date_time
     description: "Use this field to select a date to filter results by."
   }
+  #############################"MTD&YTD"#####################################################
+  dimension: before_mtd {
+    type: yesno
+    sql: EXTRACT(Month from ${date}) < EXTRACT(Month from CURRENT_DATE);;
+  }
+  dimension: is_before_mtd {
+    type: number
+    # sql: EXTRACT(Month from ${date}) < EXTRACT(Month from ${date});;
+    # sql: current_date-1 ;;
+    #sql:EXTRACT(Year from CURRENT_DATE);;
+    #sql: ${created_date} >= CURRENT_DATE ;;
+    sql: ;;
+    }
+#   measure: net_sales_current_month {
+#     type: sum
+#     sql: case
+#         when date(${created_date}) >= Cast(Concat({% parameter ${created_year} %},'-',{% parameter fiscal_month_filter %}, '-01') as date)
+#         AND date(${created_date}) < date_add(Cast(Concat ({% parameter fiscal_year_filter %},'-',{% parameter fiscal _month _filter %},'-01') as date),
+#         INTERVAL 1 Month)
+#         THEN ${TABLE}.net_sales
+#         end;;
+# }
+  dimension_group: current_c {
+    type: time
+    sql: GETDATE() ;;
+  }
+
+  dimension: before_ytd {
+    type: yesno
+    sql: EXTRACT(year from ${date}) < EXTRACT(year from CURRENT_DATE);;
+  }
+######################sets#################################
+  set: my_first_set {
+    fields: [
+      order_id,
+      sale_price,
+      count
+    ]
+  }
+  set: my_second_set {
+    fields: [
+      delivered_at,
+      average_cost
+    ]
+  }
+  set: my_third_set {
+    fields: [
+      my_first_set*,
+      my_second_set*
+    ]
+  }
 ##########################################################
   measure : total_life_time_orders{
     type :sum
@@ -193,11 +259,14 @@ view: orders_vw {
     type: sum
     value_format_name: usd
     sql: ${TABLE}.sale_price;;
-    #  sql: ${sale_price};;
+    #  sql: ${sale_price};;gggg
   }
 
 
-  measure: average_sale_price {
+
+
+  measure: avg_sale_price { # the new name
+  # alias: [count, average_sale_price]  # the old names
     type: average
     value_format_name: usd
     sql: ${sale_price} ;;
@@ -305,8 +374,5 @@ view: orders_vw {
     sql: ${total_lifetime_revenue}-${inventory_vw.total_cost} ;;
 
   }
-
-
-
 
 }
