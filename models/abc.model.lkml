@@ -21,3 +21,11 @@ explore: orders_vw {
     relationship: many_to_one
   }
 }
+explore: customer{
+  join: office {
+    type: left_outer
+    sql_on: ${office.office_id} = ${customer.customer_id} ;;
+    relationship: many_to_one
+  }
+
+}

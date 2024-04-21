@@ -2,9 +2,9 @@
 view: users_vw {
   # The sql_table_name parameter indicates the underlying database table
   # to be used for all fields in this view.
-  sql_table_name: `poc-analytics-ai.sample_superstore.users_vw`
-    ;;
+  sql_table_name: `poc-analytics-ai.sample_superstore.users_vw` ;;
   drill_fields: [id]
+
   # This primary key is the unique key for this table in the underlying database.
   # You need to define a primary key in a view in order to join to other views.
 
@@ -13,14 +13,16 @@ view: users_vw {
     type: number
     sql: ${TABLE}.id ;;
   }
+
   # required_access_grant: user_id {
   #   user_attribute: id
   #   allowed_values: ["1", "2", "3", "4", "5"]
   # }
 
-  # Here's what a typical dimension looks like in LookML.
-  # A dimension is a groupable field that can be used to filter query results.
-  # This dimension will be called "Age" in Explore.
+    # Here's what a typical dimension looks like in LookML.
+    # A dimension is a groupable field that can be used to filter query results.
+    # This dimension will be called "Age" in Explore.
+
 
   dimension: age {
     type: number
@@ -33,13 +35,10 @@ view: users_vw {
 
   measure: total_age {
     type: sum
-    sql: ${age} ;;
-  }
-
+    sql: ${age} ;;  }
   measure: average_age {
     type: average
-    sql: ${age} ;;
-  }
+    sql: ${age} ;;  }
 
   dimension: city {
     type: string
@@ -59,23 +58,10 @@ view: users_vw {
   set: user_details {
     fields: [id, city, state, country]
   }
-
   # Dates and timestamps can be represented in Looker using a dimension group of type: time.
   # Looker converts dates and timestamps to the specified timeframes within the dimension group.
 
-  dimension_group: created {
-    type: time
-    timeframes: [
-      raw,
-      time,
-      date,
-      week,
-      month,
-      quarter,
-      year
-    ]
-    sql: ${TABLE}.created_at ;;
-  }
+
 
   dimension: email {
     tags: ["phone"]
@@ -125,6 +111,5 @@ view: users_vw {
   # dimension: days_since_signup {
   #   type: number
   #   sql: DATE_DIFF(current_date(), ${created_date}, DAY);;
-
 
 }
